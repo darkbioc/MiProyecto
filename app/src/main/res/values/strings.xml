@@ -31,4 +31,7 @@
     <string name="etRepeatPass">Repeat Password</string>
     <string name="etUsername">Username</string>
     <string name="bGoBack">Go Back</string>
+    <string name="ToastRePassFail">Password doesn\'t match!</string>
+    <string name="ToastVoidFields">Please, fill all the fields!</string>
+    <string name="ToastUserShort">Username too short! (4 or more chars)</string>
 </resources>
