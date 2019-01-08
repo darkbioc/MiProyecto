@@ -1,5 +1,7 @@
 package ml.darkbioc.miproyecto;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -81,6 +83,8 @@ public class SignUpActivity extends AppCompatActivity
 										// Sign in success, update UI with the signed-in user's information
 										Log.d(TAG, "createUserWithEmail:success");
 										FirebaseUser user = mAuth.getCurrentUser();
+										Intent returnIntent = new Intent();
+										setResult(Activity.RESULT_OK,returnIntent);
 										finish();
 										//updateUI(user);
 									} else {
