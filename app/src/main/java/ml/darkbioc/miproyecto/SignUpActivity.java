@@ -82,11 +82,34 @@ public class SignUpActivity extends AppCompatActivity
 									if (task.isSuccessful()) {
 										// Sign in success, update UI with the signed-in user's information
 										Log.d(TAG, "createUserWithEmail:success");
-										FirebaseUser user = mAuth.getCurrentUser();
-										Intent returnIntent = new Intent();
-										setResult(Activity.RESULT_OK,returnIntent);
-										finish();
-										//updateUI(user);
+										FirebaseUser user=mAuth.getCurrentUser();
+										user.sendEmailVerification().addOnCompleteListener(SignUpActivity.this, new OnCompleteListener()
+										{
+											@Override public void onComplete(@NonNull Task task)
+											{
+												// Re-enable button
+												//findViewById(R.id.verify_email_button).setEnabled(true);
+												FirebaseUser user2=mAuth.getCurrentUser();
+												if(task.isSuccessful())
+												{
+
+
+													if(user2.isEmailVerified())
+													{
+														finish();
+													}
+													else
+													{
+														Toast.makeText(SignUpActivity.this, "Verification email sent to " + user2.getEmail(), Toast.LENGTH_SHORT).show();
+													}
+												}
+												else
+												{
+													Log.e(TAG, "sendEmailVerification", task.getException());
+													Toast.makeText(SignUpActivity.this, "Failed to send verification email.", Toast.LENGTH_SHORT).show();
+												}
+											}
+										});
 									} else {
 										// If sign in fails, display a message to the user.
 										Log.w(TAG, "createUserWithEmail:failure", task.getException());

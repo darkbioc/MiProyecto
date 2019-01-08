@@ -6,6 +6,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -47,6 +50,22 @@ public class MainActivity extends AppCompatActivity
 		else
 		{
 
+		}
+	}
+
+	@Override public boolean onCreateOptionsMenu(Menu menu)
+	{
+		MenuInflater inflater = getMenuInflater(); inflater.inflate(R.menu.toolbar_items, menu); return true;
+	}
+
+	@Override public boolean onOptionsItemSelected(MenuItem item)
+	{
+		switch (item.getItemId())
+		{
+			case R.id.action_logout:
+				mAuth.signOut();
+				onStart();
+			default:return super.onOptionsItemSelected(item);
 		}
 	}
 }
