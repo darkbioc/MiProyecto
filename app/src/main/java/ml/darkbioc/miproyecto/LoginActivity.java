@@ -18,6 +18,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,6 +37,7 @@ public class LoginActivity extends AppCompatActivity
 	EditText mail;
 	EditText pass;
 	private FirebaseAuth mAuth;
+
 
 	@Override protected void onCreate(Bundle savedInstanceState)
 	{
@@ -58,47 +60,54 @@ public class LoginActivity extends AppCompatActivity
 			}
 		});
 
-		login.setOnClickListener(new View.OnClickListener()
+		if(!mail.getText().toString().equals("") && !pass.getText().toString().equals(""))
 		{
-			@Override public void onClick(View v)
+			login.setOnClickListener(new View.OnClickListener()
 			{
-				mAuth.signInWithEmailAndPassword(mail.getText().toString(), pass.getText().toString()).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>()
+				@Override public void onClick(View v)
 				{
-					@Override public void onComplete(@NonNull Task<AuthResult> task)
+					mAuth.signInWithEmailAndPassword(mail.getText().toString(), pass.getText().toString()).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>()
 					{
-						if(task.isSuccessful())
+						@Override public void onComplete(@NonNull Task<AuthResult> task)
 						{
-							FirebaseUser user = mAuth.getCurrentUser();
-							if(user.isEmailVerified())
+							if(task.isSuccessful())
 							{
-								// Sign in success, update UI with the signed-in user's information
-								Log.d(TAG, "signInWithEmail:success");
-								//FirebaseUser user = mAuth.getCurrentUser();
-								Intent i=new Intent(getApplicationContext(), MainActivity.class);
-								startActivity(i);
-								finish();
+								FirebaseUser user=mAuth.getCurrentUser();
+								if(user.isEmailVerified())
+								{
+									// Sign in success, update UI with the signed-in user's information
+									Log.d(TAG, "signInWithEmail:success");
+									//FirebaseUser user = mAuth.getCurrentUser();
+									Intent i=new Intent(getApplicationContext(), MainActivity.class);
+									startActivity(i);
+									finish();
+								}
+								else
+								{
+									Toast.makeText(getApplicationContext(), R.string.notVerified, Toast.LENGTH_LONG).show();
+								}
 							}
 							else
 							{
-								Toast.makeText(getApplicationContext(),R.string.notVerified, Toast.LENGTH_LONG).show();
+								// If sign in fails, display a message to the user.
+								Log.w(TAG, "signInWithEmail:failure", task.getException());
+								Toast.makeText(LoginActivity.this, task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
 							}
 						}
-						else
-						{
-							// If sign in fails, display a message to the user.
-							Log.w(TAG, "signInWithEmail:failure", task.getException());
-							Toast.makeText(LoginActivity.this, task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-						}
-					}
-				});
-			}
-		});
+					});
+				}
+			});
+		}
+		else
+		{
+			Toast.makeText(getApplicationContext(), R.string.toast_empty_fields, Toast.LENGTH_SHORT).show();
+		}
 
 		gSignIn.setOnClickListener(new View.OnClickListener()
 		{
 			@Override public void onClick(View v)
 			{
-				GoogleSignInOptions gso=new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
+				GoogleSignInOptions gso=new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken("177072883292-ia4oastdvpeb2imjol3cfgeo2evc3c64.apps.googleusercontent.com").requestEmail().build();
 				// Build a GoogleSignInClient with the options specified by gso.
 				GoogleSignInClient mGoogleSignInClient=GoogleSignIn.getClient(LoginActivity.this, gso);
 				Intent signInIntent=mGoogleSignInClient.getSignInIntent();
